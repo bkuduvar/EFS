@@ -48,7 +48,27 @@
             {% endfor %}
             </tbody>
         </table>
-
+{% if stocks.has_other_pages %}
+  <ul class="pagination">
+    {% if stocks.has_previous %}
+      <li><a href="?page={{ stocks.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in stocks.paginator.page_range %}
+      {% if stocks.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if stocks.has_next %}
+      <li><a href="?page={{ stocks.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
      <div class="row">
             <a href="{% url 'portfolio:stock_new' %}" class="row"><span
                     class="btn btn-primary">Add Stock</span></a>

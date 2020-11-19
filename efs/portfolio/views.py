@@ -15,6 +15,7 @@ from django.contrib.auth.models import *
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 now = timezone.now()
 
@@ -52,7 +53,16 @@ def login(request):
 
 @login_required
 def customer_list(request):
-    customers = Customer.objects.filter(created_date__lte=timezone.now())
+    customer_list = Customer.objects.filter(created_date__lte=timezone.now())
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(customer_list, 5)
+    try:
+        customers = paginator.page(page)
+    except PageNotAnInteger:
+        customers = paginator.page(1)
+    except EmptyPage:
+        customers = paginator.page(paginator.num_pages)
     return render(request, 'portfolio/customer_list.html',
                   {'customers': customers})
 
@@ -85,7 +95,16 @@ def customer_delete(request, pk):
 
 @login_required
 def stock_list(request):
-    stocks = Stock.objects.filter(purchase_date__lte=timezone.now())
+    stock_list = Stock.objects.filter(purchase_date__lte=timezone.now())
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(stock_list, 5)
+    try:
+        stocks = paginator.page(page)
+    except PageNotAnInteger:
+        stocks = paginator.page(1)
+    except EmptyPage:
+        stocks = paginator.page(paginator.num_pages)
     return render(request, 'portfolio/stock_list.html', {'stocks': stocks})
 
 
@@ -133,7 +152,16 @@ def stock_delete(request, pk):
 
 @login_required
 def investment_list(request):
-    investments = Investment.objects.filter(acquired_date__lte=timezone.now())
+    investment_list = Investment.objects.filter(acquired_date__lte=timezone.now())
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(investment_list, 5)
+    try:
+        investments = paginator.page(page)
+    except PageNotAnInteger:
+        investments = paginator.page(1)
+    except EmptyPage:
+        investments = paginator.page(paginator.num_pages)
     return render(request, 'portfolio/investment_list.html', {'investments': investments})
 
 
