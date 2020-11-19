@@ -16,8 +16,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 
-
 now = timezone.now()
+
 
 # def my_password_change(request):
 #     return redirect('/home')
@@ -27,9 +27,12 @@ def home(request):
     return render(request, 'portfolio/home.html',
                   {'portfolio': home})
 
+
 def logout(request):
     auth_logout(request)
     return redirect('/home')
+
+
 #
 def login(request):
     if request.method == "POST":
@@ -40,9 +43,8 @@ def login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                #logger.info("123")
+                # logger.info("123")
                 return redirect('/home')
-
 
     form = AuthenticationForm(request)
     return render(request, 'registration/login.html', {'form': form})

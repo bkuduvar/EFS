@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views
 from django.urls import path, re_path
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView,\
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 app_name = 'portfolio'
@@ -9,11 +9,11 @@ urlpatterns = [
 
     path('', views.home, name='home'),
     path('password-change/',
-        PasswordChangeView.as_view(template_name='registration/password-change.html'),
-        name='password-change'),
-    path(r'^password-change/done/$',
-            PasswordChangeDoneView.as_view(template_name='registration/password-change-success.html'),
-            name='password-change-success'),
+         PasswordChangeView.as_view(template_name='registration/password-change.html'),
+         name='password-change'),
+    path('password_change/done/',
+         PasswordChangeDoneView.as_view(template_name='registration/password-change-success.html'),
+         name='password-change-success'),
     url(r'^home/$', views.home, name='home'),
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
