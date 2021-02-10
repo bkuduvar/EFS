@@ -1,11 +1,12 @@
 {% extends 'portfolio/base.html' %}
 {% block content %}
 
+<html lang="en">
 
 <style>
 
         body {
-            background-color: aqua;
+            background-color: beige;
         }
 </style>
 <body>
@@ -56,31 +57,12 @@
             {% endfor %}
             </tbody>
         </table>
-        {% if customers.has_other_pages %}
-  <ul class="pagination">
-    {% if customers.has_previous %}
-      <li><a href="?page={{ customers.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in customers.paginator.page_range %}
-      {% if customers.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if customers.has_next %}
-      <li><a href="?page={{ customers.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+
 
     </div>
 
 </body>
+</html>
 
 
 {% endblock %}

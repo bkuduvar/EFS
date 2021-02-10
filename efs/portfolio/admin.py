@@ -25,6 +25,7 @@ class StockList(admin.ModelAdmin):
     ordering = ['customer']
 
 
-admin.site.register(Customer)
+admin.site.register(Customer, CustomerList)
 admin.site.register(Investment, InvestmentList)
 admin.site.register(Stock, StockList)
+

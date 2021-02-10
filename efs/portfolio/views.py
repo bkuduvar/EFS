@@ -1,27 +1,14 @@
-from django.contrib import messages
-from django.shortcuts import render
-
-# Create your views here.
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import *
 from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
-from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import *
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views import generic
+from django.urls import reverse_lazy
 
 now = timezone.now()
-
-
-# def my_password_change(request):
-#     return redirect('/home')
 
 
 def home(request):
@@ -51,20 +38,17 @@ def login(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
+class SignUpView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
+
+
 @login_required
 def customer_list(request):
-    customer_list = Customer.objects.filter(created_date__lte=timezone.now())
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(customer_list, 5)
-    try:
-        customers = paginator.page(page)
-    except PageNotAnInteger:
-        customers = paginator.page(1)
-    except EmptyPage:
-        customers = paginator.page(paginator.num_pages)
+    customer = Customer.objects.filter(created_date__lte=timezone.now())
     return render(request, 'portfolio/customer_list.html',
-                  {'customers': customers})
+                  {'customers': customer})
 
 
 @login_required
@@ -95,17 +79,8 @@ def customer_delete(request, pk):
 
 @login_required
 def stock_list(request):
-    stock_list = Stock.objects.filter(purchase_date__lte=timezone.now())
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(stock_list, 5)
-    try:
-        stocks = paginator.page(page)
-    except PageNotAnInteger:
-        stocks = paginator.page(1)
-    except EmptyPage:
-        stocks = paginator.page(paginator.num_pages)
-    return render(request, 'portfolio/stock_list.html', {'stocks': stocks})
+    stock = Stock.objects.filter(purchase_date__lte=timezone.now())
+    return render(request, 'portfolio/stock_list.html', {'stocks': stock})
 
 
 @login_required
@@ -152,17 +127,8 @@ def stock_delete(request, pk):
 
 @login_required
 def investment_list(request):
-    investment_list = Investment.objects.filter(acquired_date__lte=timezone.now())
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(investment_list, 5)
-    try:
-        investments = paginator.page(page)
-    except PageNotAnInteger:
-        investments = paginator.page(1)
-    except EmptyPage:
-        investments = paginator.page(paginator.num_pages)
-    return render(request, 'portfolio/investment_list.html', {'investments': investments})
+    investment = Investment.objects.filter(acquired_date__lte=timezone.now())
+    return render(request, 'portfolio/investment_list.html', {'investments': investment})
 
 
 @login_required

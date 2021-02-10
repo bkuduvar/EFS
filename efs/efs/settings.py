@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ou4f-6zp@l!$$$60&!dt*1emtakre$4$vio-whve9(7w2#3_ig'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -74,8 +75,11 @@ WSGI_APPLICATION = 'efs.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'efs',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'PORT': '5433'
     }
 }
 
@@ -114,16 +118,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-STATICFIlES = [os.path.join(BASE_DIR,'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFIlES = [os.path.join(BASE_DIR,   'static')]
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/home'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'bhuvanadjango@gmail.com'
 EMAIL_HOST_PASSWORD = 'django123#'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+django_heroku.settings(locals())

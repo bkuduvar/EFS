@@ -1,5 +1,6 @@
 from django import forms
 from .models import Customer, Stock, Investment
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class CustomerForm(forms.ModelForm):
@@ -17,4 +18,5 @@ class StockForm(forms.ModelForm):
 class InvestmentForm(forms.ModelForm):
     class Meta:
         model = Investment
-        fields = ('customer', 'category', 'description', 'acquired_value', 'acquired_date','recent_value', 'recent_date',)
+        fields = ('customer', 'category', 'description', 'acquired_value', 'acquired_date', 'recent_value',
+                  'recent_date',)
