@@ -1,6 +1,8 @@
-from django.db import models
+from decimal import Decimal
 
+from django.db import models
 from django.utils import timezone
+import requests
 
 
 class Customer(models.Model):
@@ -69,3 +71,18 @@ class Stock(models.Model):
 
     def initial_stock_value(self):
         return self.shares * self.purchase_price
+
+    def current_stock_price(self):
+        symbol_f = str(self.symbol)
+        main_api = 'http://api.marketstack.com/v1/eod?'
+        api_key = 'access_key=e9f146b9c2cc7c3534635554a3f8cf46&limit=1&symbols='
+        url = main_api + api_key + symbol_f
+        json_data = requests.get(url).json()
+        #open_price = float(json_data["data"][0]["open"])
+        open_price = json_data.get('Global Quote', {}).get("05. price", self.purchase_price)
+        share_value = open_price
+        return share_value
+
+    def current_stock_value(self):
+        return round((Decimal(self.current_stock_price()) * Decimal(self.shares)), 3)
+
