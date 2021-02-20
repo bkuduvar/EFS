@@ -180,6 +180,54 @@ def investment_delete(request, pk):
     investment.delete()
     return redirect('portfolio:investment_list')
 
+@login_required
+def mutual_fund_list(request):
+    mutual_fund = MutualFund.objects.filter()
+    return render(request, 'portfolio/mutualfund_list.html',
+                  {'mutual_funds': mutual_fund})
+
+
+@login_required
+def mutual_fund_edit(request, pk):
+    mutual_fund = get_object_or_404(MutualFund, pk=pk)
+    if request.method == "POST":
+        # update
+        form = MutualFundForm(request.POST, instance=mutual_fund)
+        if form.is_valid():
+            mutual_fund = form.save(commit=False)
+            mutual_fund.save()
+            mutual_funds = MutualFund.objects.filter()
+            return render(request, 'portfolio/mutualfund_list.html',
+                          {'mutual_funds': mutual_funds})
+    else:
+        # edit
+        form = MutualFundForm(instance=mutual_fund)
+    return render(request, 'portfolio/mutualfund_edit.html', {'form': form})
+
+
+@login_required
+def mutual_fund_delete(request, pk):
+    mutual_fund = get_object_or_404(MutualFund, pk=pk)
+    mutual_fund.delete()
+    return redirect('portfolio:mutualfund_list')
+
+
+@login_required
+def mutual_fund_new(request):
+    if request.method == "POST":
+        form = MutualFundForm(request.POST)
+        if form.is_valid():
+            mutual_fund = form.save(commit=False)
+            mutual_fund.created_date = timezone.now()
+            mutual_fund.save()
+            mutual_funds = MutualFund.objects.filter(purchase_date__lte=timezone.now())
+            return render(request, 'portfolio/mutualfund_list.html',
+                          {'mutual_funds': mutual_funds})
+    else:
+        form = MutualFundForm()
+        # print("Else")
+    return render(request, 'portfolio/mutualfund_new.html', {'form': form})
+
 
 @login_required
 def portfolio(request, pk):
@@ -187,12 +235,15 @@ def portfolio(request, pk):
     customers = Customer.objects.filter(created_date__lte=timezone.now())
     investments = Investment.objects.filter(customer=pk)
     stocks = Stock.objects.filter(customer=pk)
+    mutual_funds = MutualFund.objects.filter(customer=pk)
     sum_recent_value = Investment.objects.filter(customer=pk).aggregate(Sum('recent_value'))
     sum_acquired_value = Investment.objects.filter(customer=pk).aggregate(Sum('acquired_value'))
     # overall_investment_results = sum_recent_value-sum_acquired_value
     # Initialize the value of the stocks
     sum_current_stocks_value = 0
     sum_of_initial_stock_value = 0
+    sum_current_mutual_fund_value = 0
+    sum_initial_mutual_fund_value = 0
 
     # Loop through each stock and add the value to the total
     for stock in stocks:
@@ -205,6 +256,11 @@ def portfolio(request, pk):
         portfolio_initial_total = sum_of_initial_stock_value + sum_acquired_investments
         portfolio_current_total = sum_current_stocks_value + sum_recent_investments
 
+    for mutual_fund in mutual_funds:
+        sum_current_mutual_fund_value += mutual_fund.current_mutual_fund_value()
+        sum_initial_mutual_fund_value += mutual_fund.initial_mutual_fund_value()
+
+
     return render(request, 'portfolio/portfolio.html', {'customers': customers,
                                                         'investments': investments, 'stocks': stocks,
                                                         'sum_acquired_value': sum_acquired_value,
@@ -215,6 +271,9 @@ def portfolio(request, pk):
                                                         'portfolio_current_total': portfolio_current_total,
                                                         'sum_recent_investments': sum_recent_investments,
                                                         'sum_acquired_investments': sum_acquired_investments,
+                                                        'sum_current_mutual_fund_value': sum_current_mutual_fund_value,
+                                                        'sum_initial_mutual_fund_value': sum_initial_mutual_fund_value,
+                                                        'mutual_funds': mutual_funds,
                                                         })
 
 # List at the end of the views.py
