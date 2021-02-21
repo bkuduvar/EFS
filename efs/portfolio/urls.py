@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^accounts/logout/$', views.logout, name='logout'),
     path('signup/', SignUpView.as_view(), name='signup'),
     path('customer_list', views.customer_list, name='customer_list'),
+    path('customer/create/', views.customer_new, name='customer_new'),
     path('customer/<int:pk>/edit/', views.customer_edit, name='customer_edit'),
     path('customer/<int:pk>/delete/', views.customer_delete, name='customer_delete'),
     path('stock_list', views.stock_list, name='stock_list'),
